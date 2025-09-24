@@ -35,7 +35,7 @@ const MapComponent = ({
                             latitude,
                             longitude,
                             latitudeDelta: 0.0006,
-                            longitudeDelta:0.0006,
+                            longitudeDelta: 0.0006,
                         }}
                         loadingFallback={
                             <View>
