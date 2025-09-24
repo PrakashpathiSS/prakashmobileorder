@@ -1,4 +1,4 @@
-package com.jagoorderfood
+package com.positivity.Order
 
 import android.app.Application
 import android.content.res.Configuration

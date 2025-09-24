@@ -92,7 +92,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.jagoorderfood'
+    namespace 'com.positivity.Order'
     defaultConfig {
         applicationId 'com.positivity.Order'
         minSdkVersion rootProject.ext.minSdkVersion

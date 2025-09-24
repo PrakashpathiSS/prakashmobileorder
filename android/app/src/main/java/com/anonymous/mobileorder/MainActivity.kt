@@ -1,4 +1,4 @@
-package com.jagoorderfood
+package com.positivity.Order
 
 import android.os.Build
 import android.os.Bundle
