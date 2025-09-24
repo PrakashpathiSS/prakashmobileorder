@@ -1,6 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
+import groovy.json.JsonOutput
 
 def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
 
@@ -80,6 +81,10 @@ def enableMinifyInReleaseBuilds = (findProperty('android.enableMinifyInReleaseBu
  * this variant is about 6MiB larger per architecture than default.
  */
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
+def gitCommitHash = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
+def gitBranch = 'git rev-parse --abbrev-ref HEAD'.execute([], project.rootDir).text.trim()
+def gitCommitTime = 'git log -1 --format=%cd --date=format:%Y-%m-%dT%H:%M:%S'.execute([], project.rootDir).text.trim()
+def branchInitial = gitBranch? gitBranch[0] : "n"
 
 android {
     ndkVersion rootProject.ext.ndkVersion
@@ -93,8 +98,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0.0"
-
+        versionName "1.0"
+        versionNameSuffix "-${branchInitial}-${gitCommitHash}"
         buildConfigField "String", "REACT_NATIVE_RELEASE_LEVEL", "\"${findProperty('reactNativeReleaseLevel') ?: 'stable'}\""
     }
     signingConfigs {
@@ -104,6 +109,12 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            storeFile file('jago-order.jks')
+            storePassword 'BMHQaTU66GJGL95'
+            keyAlias 'jago-order'
+            keyPassword 'BMHQaTU66GJGL95'
+        }
     }
     buildTypes {
         debug {
@@ -112,13 +123,37 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             def enableShrinkResources = findProperty('android.enableShrinkResourcesInReleaseBuilds') ?: 'false'
             shrinkResources enableShrinkResources.toBoolean()
             minifyEnabled enableMinifyInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             def enablePngCrunchInRelease = findProperty('android.enablePngCrunchInReleaseBuilds') ?: 'true'
             crunchPngs enablePngCrunchInRelease.toBoolean()
+        }
+    }
+      // start --runner script for build commit hash
+    task updateGitInfo {
+     doLast {
+        def jsonFile = file("$projectDir/git-info.json")
+        jsonFile.getParentFile().mkdirs()
+        def jsonData = [
+            commitHash: gitCommitHash,
+            commitTime: gitCommitTime,
+            branch: branchInitial
+        ]
+        jsonFile.text = JsonOutput.prettyPrint(JsonOutput.toJson(jsonData))
+        println "Updated git-info.json with commit ${gitCommitHash} at ${gitCommitTime}"
+      }
+    }
+    preBuild.dependsOn updateGitInfo
+   //end
+     applicationVariants.all { variant ->
+        variant.outputs.all {
+            archivesBaseName = "+order-${variant.versionName}"
+            if (variant.buildType.name == "release") {
+                outputFileName = "+order-${variant.versionName}.apk"
+            }
         }
     }
     packagingOptions {
