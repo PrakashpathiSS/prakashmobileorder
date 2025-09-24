@@ -1,0 +1,32 @@
+const baseFont = {
+    greeting_text:18,
+    dropdown_label:12,
+    dropdown_value:14,
+    search_text:12,
+    menu_book_text:14,
+    menu_text:14,
+    catogery_text:14,
+    item_dropdown_value:14,
+    item_name_text:14,
+    item_description:12,
+    item_price_text:12,
+    bottom_tab_text:10,
+    sheet_title:20,
+    modsite_text:14,
+    modsItem_text:14,
+    modsPrice_text:20,
+    modsExtra_text:14,
+    modsNotes_text:14,
+    button_text:14,
+    modal_title:16,
+    modsl_sub_title:14,
+    profile_title:20,
+    profile_label_title:14,
+    profile_label_sub_title:16,
+    select_business_values:16,
+    add_business_field:14,
+    add_business_field_error:12,
+    
+}
+
+export { baseFont }
