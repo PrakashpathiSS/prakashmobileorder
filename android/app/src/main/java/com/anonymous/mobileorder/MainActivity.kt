@@ -1,4 +1,4 @@
-package com.anonymous.mobileorder
+package com.jagoorderfood
 
 import android.os.Build
 import android.os.Bundle

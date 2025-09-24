@@ -20,7 +20,7 @@ export const RootNavigator = React.forwardRef((props, ref) => {
   return (
     <Wrapper>
       <StatusBar barStyle={Platform.OS == 'ios' ? "dark-content" : 'dark-content'} />
-      <NavigationContainer>
+      <NavigationContainer ref={ref} {...props}>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name={Routes.INSIDE_STACK} component={InsideStack} />
         </Stack.Navigator>
